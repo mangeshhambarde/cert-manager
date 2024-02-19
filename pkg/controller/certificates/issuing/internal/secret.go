@@ -208,8 +208,14 @@ func (s *SecretsManager) setValues(crt *cmapi.Certificate, secret *corev1.Secret
 // getCertificateSecret will return a secret which is ready for fields to be
 // applied. Only the Secret Type will be persisted from the original Secret.
 func (s *SecretsManager) getCertificateSecret(ctx context.Context, crt *cmapi.Certificate) (*corev1.Secret, error) {
+	// Get secret namespace.
+	secretNamespace := crt.Spec.SecretNamespace
+	if secretNamespace == nil {
+		secretNamespace = &crt.Namespace
+	}
+
 	// Get existing secret if it exists.
-	existingSecret, err := s.secretLister.Secrets(crt.Namespace).Get(crt.Spec.SecretName)
+	existingSecret, err := s.secretLister.Secrets(*secretNamespace).Get(crt.Spec.SecretName)
 
 	// If secret doesn't exist yet, return an empty secret that should be
 	// created.
@@ -217,7 +223,7 @@ func (s *SecretsManager) getCertificateSecret(ctx context.Context, crt *cmapi.Ce
 		return &corev1.Secret{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      crt.Spec.SecretName,
-				Namespace: crt.Namespace,
+				Namespace: *secretNamespace,
 			},
 			Data: make(map[string][]byte),
 			Type: corev1.SecretTypeTLS,
@@ -234,7 +240,7 @@ func (s *SecretsManager) getCertificateSecret(ctx context.Context, crt *cmapi.Ce
 	return &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      crt.Spec.SecretName,
-			Namespace: crt.Namespace,
+			Namespace: *secretNamespace,
 		},
 		Data: make(map[string][]byte),
 		// Use the existing Secret's type since this may not be of type

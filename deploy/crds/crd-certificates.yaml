@@ -505,6 +505,9 @@ spec:
                     private key and certificate, signed by the denoted issuer. The Secret
                     resource lives in the same namespace as the Certificate resource.
                   type: string
+                secretNamespace:
+                  description: SecretNamespace is the name of the namespace where the secret resource that will be created.
+                  type: string
                 secretTemplate:
                   description: |-
                     Defines annotations and labels to be copied to the Certificate's Secret.

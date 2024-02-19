@@ -199,6 +199,10 @@ type CertificateSpec struct {
 	// resource lives in the same namespace as the Certificate resource.
 	SecretName string `json:"secretName"`
 
+	// The namespace where the Secret resource lives.
+	// +optional
+	SecretNamespace *string `json:"secretNamespace"`
+
 	// Defines annotations and labels to be copied to the Certificate's Secret.
 	// Labels and annotations on the Secret will be changed as they appear on the
 	// SecretTemplate when added or removed. SecretTemplate annotations are added
