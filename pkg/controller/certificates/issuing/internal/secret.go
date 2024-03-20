@@ -209,13 +209,10 @@ func (s *SecretsManager) setValues(crt *cmapi.Certificate, secret *corev1.Secret
 // applied. Only the Secret Type will be persisted from the original Secret.
 func (s *SecretsManager) getCertificateSecret(ctx context.Context, crt *cmapi.Certificate) (*corev1.Secret, error) {
 	// Get secret namespace.
-	secretNamespace := crt.Spec.SecretNamespace
-	if secretNamespace == nil {
-		secretNamespace = &crt.Namespace
-	}
+	secretNamespace := certificates.GetSecretNamespace(crt)
 
 	// Get existing secret if it exists.
-	existingSecret, err := s.secretLister.Secrets(*secretNamespace).Get(crt.Spec.SecretName)
+	existingSecret, err := s.secretLister.Secrets(secretNamespace).Get(crt.Spec.SecretName)
 
 	// If secret doesn't exist yet, return an empty secret that should be
 	// created.
@@ -223,7 +220,7 @@ func (s *SecretsManager) getCertificateSecret(ctx context.Context, crt *cmapi.Ce
 		return &corev1.Secret{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      crt.Spec.SecretName,
-				Namespace: *secretNamespace,
+				Namespace: secretNamespace,
 			},
 			Data: make(map[string][]byte),
 			Type: corev1.SecretTypeTLS,
@@ -240,7 +237,7 @@ func (s *SecretsManager) getCertificateSecret(ctx context.Context, crt *cmapi.Ce
 	return &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      crt.Spec.SecretName,
-			Namespace: *secretNamespace,
+			Namespace: secretNamespace,
 		},
 		Data: make(map[string][]byte),
 		// Use the existing Secret's type since this may not be of type
@@ -256,7 +253,7 @@ func (s *SecretsManager) setKeystores(crt *cmapi.Certificate, secret *corev1.Sec
 	// Handle the experimental PKCS12 support
 	if crt.Spec.Keystores != nil && crt.Spec.Keystores.PKCS12 != nil && crt.Spec.Keystores.PKCS12.Create {
 		ref := crt.Spec.Keystores.PKCS12.PasswordSecretRef
-		pwSecret, err := s.secretLister.Secrets(crt.Namespace).Get(ref.Name)
+		pwSecret, err := s.secretLister.Secrets(certificates.GetSecretNamespace(crt)).Get(ref.Name)
 		if err != nil {
 			return fmt.Errorf("fetching PKCS12 keystore password from Secret: %v", err)
 		}
@@ -285,7 +282,7 @@ func (s *SecretsManager) setKeystores(crt *cmapi.Certificate, secret *corev1.Sec
 	// Handle the experimental JKS support
 	if crt.Spec.Keystores != nil && crt.Spec.Keystores.JKS != nil && crt.Spec.Keystores.JKS.Create {
 		ref := crt.Spec.Keystores.JKS.PasswordSecretRef
-		pwSecret, err := s.secretLister.Secrets(crt.Namespace).Get(ref.Name)
+		pwSecret, err := s.secretLister.Secrets(certificates.GetSecretNamespace(crt)).Get(ref.Name)
 		if err != nil {
 			return fmt.Errorf("fetching JKS keystore password from Secret: %v", err)
 		}

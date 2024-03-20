@@ -147,7 +147,7 @@ func (c *controller) ProcessItem(ctx context.Context, key string) error {
 	}
 
 	// Discover all 'owned' secrets that have the `next-private-key` label
-	secrets, err := certificates.ListSecretsMatchingPredicates(c.secretLister.Secrets(crt.Namespace), isNextPrivateKeyLabelSelector, predicate.ResourceOwnedBy(crt))
+	secrets, err := certificates.ListSecretsMatchingPredicates(c.secretLister.Secrets(internalcertificates.GetSecretNamespace(crt)), isNextPrivateKeyLabelSelector, predicate.ResourceOwnedBy(crt))
 	if err != nil {
 		return err
 	}
@@ -228,7 +228,7 @@ func (c *controller) ProcessItem(ctx context.Context, key string) error {
 
 func (c *controller) createNextPrivateKeyRotationPolicyNever(ctx context.Context, crt *cmapi.Certificate) error {
 	log := logf.FromContext(ctx)
-	s, err := c.secretLister.Secrets(crt.Namespace).Get(crt.Spec.SecretName)
+	s, err := c.secretLister.Secrets(internalcertificates.GetSecretNamespace(crt)).Get(crt.Spec.SecretName)
 	if apierrors.IsNotFound(err) {
 		log.V(logf.DebugLevel).Info("Creating new nextPrivateKeySecretName Secret because no existing Secret found and rotation policy is Never")
 		return c.createAndSetNextPrivateKey(ctx, crt)
@@ -339,7 +339,7 @@ func (c *controller) createNewPrivateKeySecret(ctx context.Context, crt *cmapi.C
 
 	s := &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
-			Namespace:       crt.Namespace,
+			Namespace:       internalcertificates.GetSecretNamespace(crt),
 			Name:            name,
 			OwnerReferences: []metav1.OwnerReference{*metav1.NewControllerRef(crt, certificateGvk)},
 			Labels: map[string]string{

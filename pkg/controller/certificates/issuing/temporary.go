@@ -23,6 +23,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 
+	internalcertificates "github.com/cert-manager/cert-manager/internal/controller/certificates"
 	"github.com/cert-manager/cert-manager/internal/controller/certificates/policies"
 	cmapi "github.com/cert-manager/cert-manager/pkg/apis/certmanager/v1"
 	"github.com/cert-manager/cert-manager/pkg/controller/certificates/issuing/internal"
@@ -47,7 +48,7 @@ func (c *controller) ensureTemporaryCertificate(ctx context.Context, crt *cmapi.
 	}
 
 	// Attempt to fetch the Secret being managed but tolerate NotFound errors.
-	secret, err := c.secretLister.Secrets(crt.Namespace).Get(crt.Spec.SecretName)
+	secret, err := c.secretLister.Secrets(internalcertificates.GetSecretNamespace(crt)).Get(crt.Spec.SecretName)
 	if err != nil && !apierrors.IsNotFound(err) {
 		return false, err
 	}

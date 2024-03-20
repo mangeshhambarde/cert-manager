@@ -26,6 +26,7 @@ import (
 	"github.com/cert-manager/cert-manager/e2e-tests/framework/helper/validation/certificates"
 	"github.com/cert-manager/cert-manager/e2e-tests/framework/helper/validation/certificatesigningrequests"
 	"github.com/cert-manager/cert-manager/e2e-tests/framework/log"
+	internalcertificates "github.com/cert-manager/cert-manager/internal/controller/certificates"
 	cmapi "github.com/cert-manager/cert-manager/pkg/apis/certmanager/v1"
 )
 
@@ -35,7 +36,7 @@ func (h *Helper) ValidateCertificate(certificate *cmapi.Certificate, validations
 		validations = validation.DefaultCertificateSet()
 	}
 
-	secret, err := h.KubeClient.CoreV1().Secrets(certificate.Namespace).Get(context.TODO(), certificate.Spec.SecretName, metav1.GetOptions{})
+	secret, err := h.KubeClient.CoreV1().Secrets(internalcertificates.GetSecretNamespace(certificate)).Get(context.TODO(), certificate.Spec.SecretName, metav1.GetOptions{})
 	if err != nil {
 		return err
 	}

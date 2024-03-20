@@ -94,7 +94,7 @@ func CertificateOwnsSecret(
 	ownerCertificate := duplicateNames[0]
 
 	// Fetch the Secret and determine if it is owned by any of the Certificates.
-	secret, err := secretLister.Secrets(crt.Namespace).Get(crt.Spec.SecretName)
+	secret, err := secretLister.Secrets(GetSecretNamespace(crt)).Get(crt.Spec.SecretName)
 	if err != nil && !apierrors.IsNotFound(err) {
 		return false, nil, err
 	} else if err == nil {
@@ -110,4 +110,12 @@ func CertificateOwnsSecret(
 		return s == crt.Name
 	})
 	return isOwner, otherCertificatesWithSameSecretName, nil
+}
+
+func GetSecretNamespace(crt *cmapi.Certificate) string {
+	if crt.Spec.SecretNamespace != nil {
+		return *crt.Spec.SecretNamespace
+	} else {
+		return crt.Namespace
+	}
 }

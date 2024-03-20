@@ -214,6 +214,7 @@ import (
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/labels"
 
+	internalcertificates "github.com/cert-manager/cert-manager/internal/controller/certificates"
 	internalinformers "github.com/cert-manager/cert-manager/internal/informers"
 	cmapi "github.com/cert-manager/cert-manager/pkg/apis/certmanager/v1"
 	cmlisters "github.com/cert-manager/cert-manager/pkg/client/listers/certmanager/v1"
@@ -242,7 +243,7 @@ type Gatherer struct {
 func (g *Gatherer) DataForCertificate(ctx context.Context, crt *cmapi.Certificate) (Input, error) {
 	log := logf.FromContext(ctx)
 	// Attempt to fetch the Secret being managed but tolerate NotFound errors.
-	secret, err := g.SecretLister.Secrets(crt.Namespace).Get(crt.Spec.SecretName)
+	secret, err := g.SecretLister.Secrets(internalcertificates.GetSecretNamespace(crt)).Get(crt.Spec.SecretName)
 	if err != nil && !apierrors.IsNotFound(err) {
 		return Input{}, err
 	}

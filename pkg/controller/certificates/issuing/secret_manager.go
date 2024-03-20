@@ -24,6 +24,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 
+	internalcertificates "github.com/cert-manager/cert-manager/internal/controller/certificates"
 	"github.com/cert-manager/cert-manager/internal/controller/certificates/policies"
 	cmapi "github.com/cert-manager/cert-manager/pkg/apis/certmanager/v1"
 	cmmeta "github.com/cert-manager/cert-manager/pkg/apis/meta/v1"
@@ -37,7 +38,7 @@ import (
 // AdditionalOutputFormats.
 func (c *controller) ensureSecretData(ctx context.Context, log logr.Logger, crt *cmapi.Certificate) error {
 	// Retrieve the Secret which is associated with this Certificate.
-	secret, err := c.secretLister.Secrets(crt.Namespace).Get(crt.Spec.SecretName)
+	secret, err := c.secretLister.Secrets(internalcertificates.GetSecretNamespace(crt)).Get(crt.Spec.SecretName)
 
 	// Secret doesn't exist so we can't do anything. The Certificate will be
 	// marked for a re-issuance and the resulting Secret will be evaluated again.
