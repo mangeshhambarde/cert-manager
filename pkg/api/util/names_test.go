@@ -49,7 +49,7 @@ func TestComputeName(t *testing.T) {
 				},
 			},
 			wantErr: false,
-			want:    "unit.test.jetstack.io-1683025094",
+			want:    "unit.test.jetstack.io-4252392430",
 		},
 		{
 			name: "Name generation too long domains",
@@ -64,7 +64,7 @@ func TestComputeName(t *testing.T) {
 				},
 			},
 			wantErr: false,
-			want:    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-108802726",
+			want:    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-2719463566",
 		},
 		{
 			name: "Name generation for dot as 52nd char",
@@ -79,7 +79,7 @@ func TestComputeName(t *testing.T) {
 				},
 			},
 			wantErr: false,
-			want:    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-225297437",
+			want:    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-957045067",
 		},
 		{
 			name: "Name generation for dot as 54td char",
@@ -94,7 +94,7 @@ func TestComputeName(t *testing.T) {
 				},
 			},
 			wantErr: false,
-			want:    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-1448584771",
+			want:    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-584482141",
 		},
 	}
 	for _, tt := range tests {
