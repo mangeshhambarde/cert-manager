@@ -149,6 +149,9 @@ const (
 	// IngressSecretTemplate can be used to set the secretTemplate field in the generated Certificate.
 	// The value is a JSON representation of secretTemplate and must not have any unknown fields.
 	IngressSecretTemplate = "cert-manager.io/secret-template"
+
+	// IngressSecretNamespace can be used to set the secretNamespace field in the generated Certificate.
+	IngressSecretNamespace = "cert-manager.io/secret-namespace"
 )
 
 // Annotation names for CertificateRequests

@@ -287,5 +287,9 @@ func translateAnnotations(crt *cmapi.Certificate, ingLikeAnnotations map[string]
 		}
 	}
 
+	if secretNamespace, found := ingLikeAnnotations[cmapi.IngressSecretNamespace]; found {
+		crt.Spec.SecretNamespace = &secretNamespace
+	}
+
 	return nil
 }
