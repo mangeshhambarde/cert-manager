@@ -13,6 +13,7 @@
 # limitations under the License.
 
 RELEASE_VERSION := $(shell git describe --tags --match='v*' --abbrev=14)
+RELEASE_VERSION := $(shell echo "v1.14.4")
 
 GITCOMMIT := $(shell git rev-parse HEAD)
 
