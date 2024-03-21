@@ -195,11 +195,11 @@ type CertificateSpec struct {
 
 	// Name of the Secret resource that will be automatically created and
 	// managed by this Certificate resource. It will be populated with a
-	// private key and certificate, signed by the denoted issuer. The Secret
-	// resource lives in the same namespace as the Certificate resource.
+	// private key and certificate, signed by the denoted issuer.
 	SecretName string `json:"secretName"`
 
 	// The namespace where the Secret resource lives.
+	// If not specified, it lives in the same namespace as the Certificate resource.
 	// +optional
 	SecretNamespace *string `json:"secretNamespace"`
 

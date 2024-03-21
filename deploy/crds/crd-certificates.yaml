@@ -502,11 +502,12 @@ spec:
                   description: |-
                     Name of the Secret resource that will be automatically created and
                     managed by this Certificate resource. It will be populated with a
-                    private key and certificate, signed by the denoted issuer. The Secret
-                    resource lives in the same namespace as the Certificate resource.
+                    private key and certificate, signed by the denoted issuer.
                   type: string
                 secretNamespace:
-                  description: SecretNamespace is the name of the namespace where the secret resource that will be created.
+                  description: |-
+                    Namespace where the secret resource will be created.
+                    If not specified, it is created in the same namespace as the Certificate resource.
                   type: string
                 secretTemplate:
                   description: |-
